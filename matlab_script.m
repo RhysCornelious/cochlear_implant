@@ -143,9 +143,9 @@ function Hd = butterworth(lowerChannelBound, upperChannelBound)
 % Butterworth Bandpass filter designed using FDESIGN.BANDPASS.
 
 % All frequency values are in Hz.
-Fs = 16000;  % Sampling Frequency
+Fs = 8000;  % Sampling Frequency
 
-order   = 10;    % Order
+order   = 6;    % Order
 Fc1 = lowerChannelBound;   % First Cutoff Frequency
 Fc2 = upperChannelBound;  % Second Cutoff Frequency
 
@@ -167,13 +167,13 @@ function Hd = lowpass
 % Butterworth Lowpass filter designed using FDESIGN.LOWPASS.
 
 % All frequency values are in Hz.
-Fs = 16000;  % Sampling Frequency
+Fs = 8000;  % Sampling Frequency
 
-N  = 10;    % Order
+order  = 2;    % Order
 Fc = 400;  % Cutoff Frequency
 
 % Construct an FDESIGN object and call its BUTTER method.
-h  = fdesign.lowpass('N,F3dB', N, Fc, Fs);
+h  = fdesign.lowpass('N,F3dB', order, Fc, Fs);
 Hd = design(h, 'butter');
 
 % [EOF]
