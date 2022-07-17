@@ -63,10 +63,14 @@ end
 % sound = audioplayer(data,16000);
 % play(sound);
 
-numChannels = 10;
+
+% Task 4: splitting the sound into 'numChannels' channels and generating a
+% filter (filter used is Butterworth with N=10)
+numChannels = 22;
 
 filterSignals = filterDesign(sampleAudio, numChannels);
 
+% Task 6: Plotting signals of the lowest and highest frequency channels
 lowChannel = filterSignals(1,:);
 highChannel = filterSignals(numChannels,:);
 
@@ -84,13 +88,16 @@ plot(sampleNumVectorHigh,highChannel);
 xlabel('Sample Number');
 ylabel('Highest Frequency Signal Amplitude');
 
+% Task 7: Rectifying output signals of all bandpass filters
 soundChannelsRectified = abs(filterSignals);
 
+% Task 8: 400 Hz cuttof lowpass filter envelope detection
 for channelNum = 1:numChannels
     Hd = lowpass();
     soundChannelsRectified(channelNum) = filter(Hd,soundChannelsRectified(channelNum));
 end
 
+% Task 9: Plotting extracted envelopes
 rectifiedLowChannel = soundChannelsRectified(1,:);
 rectifiedHighChannel = soundChannelsRectified(numChannels,:);
 
@@ -107,12 +114,17 @@ ylabel('Highest Frequency Signal Amplitude - Rectified');
 function filterMaker = filterDesign(audio, N)
     lowerBound = 100;
     upperBound = 8000;
-    channelVals = linspace(lowerBound,upperBound, N+2);
-    channelSounds = zeros(N, length(audio));
-
+    channelVals = hz2mel([lowerBound,upperBound]);
     for channel = 1:N
-        Hd = butterworth(channelVals(channel),channelVals(channel+1));
-
+        channelValues = linspace(channelVals(1), channelVals(2));
+    end
+    channelValues = mel2hz(channelValues);
+    channelSounds = zeros(N, length(audio));
+        
+    for channel = 1:N
+        Hd = butterworth(channelValues(channel),channelValues(channel+1));
+           
+        % Task 5: Filtering sound with passband bank
         filtered = filter(Hd,audio);
 
         channelSounds(channel, :) = transpose(filtered);
