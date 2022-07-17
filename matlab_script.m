@@ -19,7 +19,7 @@ end
 % 3.3 playing sound in matlab
 
 sound = audioplayer(sampleAudio, sampleRate);
-play(sound);
+% play(sound);
 
 % 3.4 writing sound to new file
 
@@ -29,10 +29,10 @@ audiowrite(filename,sampleAudio,sampleRate)
 % 3.5 plotting the sound waveform as function of its sample number
 
 sampleNumVector = linspace(1, inputSize(1), inputSize(1));
-figure;
-plot(sampleNumVector,sampleAudio);
-xlabel('Sample Number');
-ylabel('Signal Amplitude')
+% figure;
+% plot(sampleNumVector,sampleAudio);
+% xlabel('Sample Number');
+% ylabel('Signal Amplitude')
 
 % 3.6 resampling to 16kHz if necessary
 
@@ -63,16 +63,35 @@ end
 % sound = audioplayer(data,16000);
 % play(sound);
 
+numChannels = 10;
 
+filterSignals = filterDesign(sampleAudio, numChannels);
 
-filterMaker = filterDesign(sampleAudio, 10);
+lowChannel = filterSignals(1,:);
+highChannel = filterSignals(numChannels,:);
+
+sampleNumVectorLow = linspace(1, length(lowChannel), length(lowChannel));
+
+figure;
+plot(sampleNumVectorLow,lowChannel);
+xlabel('Sample Number');
+ylabel('Lowest Frequency Signal Amplitude');
+
+sampleNumVectorHigh = linspace(1, length(highChannel), length(highChannel));
+
+figure;
+plot(sampleNumVectorHigh,highChannel);
+xlabel('Sample Number');
+ylabel('Highest Frequency Signal Amplitude');
+
+soundChannelsRectified = abs(filterSignals);
 
 
 function filterMaker = filterDesign(audio, N)
     disp("fewfewffff")
     lowerBound = 100;
     upperBound = 8000;
-    channelVals = linspace(lowerBound,upperBound, N+1);
+    channelVals = linspace(lowerBound,upperBound, N+2);
     channelSounds = zeros(N, length(audio));
 
     for channel = 1:N
